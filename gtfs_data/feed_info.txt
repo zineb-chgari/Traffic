@@ -1,0 +1,2 @@
+"feed_publisher_name","feed_publisher_url","feed_lang","default_lang","feed_start_date","feed_end_date","feed_version","feed_contact_email","feed_contact_url"
+"Busmaps.com","https://busmaps.com","fr","en","20201201","20211130","20251031-1807","alex@busmaps.com","https://busmaps.com/contacts"

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Transport Optimizer - Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 20px auto;
+      width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover { background: #0056b3; }
+    input { width: 100%; padding: 8px; margin-top: 5px; }
+    pre {
+      background: #eee;
+      padding: 12px;
+      border-radius: 8px;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚍 Smart Transport Optimizer Demo</h1>
+
+  <div class="card">
+    <h3>Optimiser un itinéraire</h3>
+    <label>Origine (lat,lng):</label>
+    <input id="origin" value="34.01325,-6.83255" />
+
+    <label>Destination (lat,lng):</label>
+    <input id="destination" value="34.02088,-6.84165" />
+
+    <button onclick="optimizeRoute()">Lancer l'optimisation</button>
+
+    <pre id="result"></pre>
+  </div>
+
+  <script>
+    async function optimizeRoute() {
+      const resultBox = document.getElementById("result");
+      resultBox.textContent = "Chargement...";
+
+      const [oLat, oLng] = document.getElementById("origin").value.split(",");
+      const [dLat, dLng] = document.getElementById("destination").value.split(",");
+
+      const body = {
+        origin: { latitude: parseFloat(oLat), longitude: parseFloat(oLng) },
+        destination: { latitude: parseFloat(dLat), longitude: parseFloat(dLng) },
+        transit_modes: ["bus", "tram"]
+      };
+
+      try {
+        const res = await fetch("http://localhost:8000/api/routes/optimize", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+        resultBox.textContent = JSON.stringify(data, null, 2);
+
+      } catch (err) {
+        resultBox.textContent = "Erreur: " + err;
+      }
+    }
+  </script>
+</body>
+</html>
