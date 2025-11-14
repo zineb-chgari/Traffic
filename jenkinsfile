@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        // Optionnel : Virtualenv ou autres variables
+        VENV = "${WORKSPACE}/.venv"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/zineb-chgari/Traffic.git'
+            }
+        }
+
+        stage('Setup Python') {
+            steps {
+                sh 'python -m venv .venv'
+                sh '.venv/Scripts/pip install --upgrade pip'
+                sh '.venv/Scripts/pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '.venv/Scripts/pytest tests/ -v'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Optional build steps here'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Optional deploy steps here'
+            }
+        }
+    }
+
+    post {
+        always {
+            junit 'tests/*.xml'  // si tu génères des rapports JUnit
+            cleanWs()
+        }
+    }
+}
